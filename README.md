@@ -1,3 +1,4 @@
+
 # 🎯 WEBLOG
 - The Weblog Project is a frequently updated web page used for personal commentary or business content.
 
@@ -116,3 +117,6 @@ Since these all the four Normalisation are followed by our table,the table is in
 
 - Similarly if the user want to see a post on particular category the user sends a request to the server for that particular category where the category id is fetched from the category table which corresponds to that particular catogory name and with that again the posts related are fetched from the post table.
 
+=======
+# Blog
+>>>>>>> a82983b10bc9cd882043a499b279fd477b4d4629
