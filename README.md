@@ -116,7 +116,3 @@ Since these all the four Normalisation are followed by our table,the table is in
 - If the user sends the request for loging in ,the user is able to login in only if the email id and the password matches to the one in the `user table `
 
 - Similarly if the user want to see a post on particular category the user sends a request to the server for that particular category where the category id is fetched from the category table which corresponds to that particular catogory name and with that again the posts related are fetched from the post table.
-
-=======
-# Blog
->>>>>>> a82983b10bc9cd882043a499b279fd477b4d4629
