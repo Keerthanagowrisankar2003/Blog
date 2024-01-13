@@ -1,4 +1,3 @@
-
 # 🎯 WEBLOG
 - The Weblog Project is a frequently updated web page used for personal commentary or business content.
 
@@ -7,7 +6,10 @@
 - The users can also view  other people's posts and also they can post their own ideas on a particular topic.
 
 ## ER DIAGRAM
-## ![ER DIAGRAM FOR THE EXPENDITURE CALCULATOR](Visual_Assets/Blog_ERdiagram.png)
+## ![ER DIAGRAM FOR BLOG](Visual_Assets/Blog_ERdiagram.png)
+
+## USE-CASE DIAGRAM
+## ![USE-CASE DIAGRAM FOR BLOG](Visual_Assets/Blog-Usecase.png)
 
 - ### 1NF:
     - ✔ Each table has its own `primary key`
@@ -32,83 +34,88 @@
 Since these all the four Normalisation are followed by our table,the table is in the normalisation form.
 
 ## `EXPLANATION`:
-- This ER Diagram consists of the tables `User`,`Post` and `category`.
+- This ER Diagram consists of the tables `User`,`Post`, `category`and `Feedback`.
 - The `user table `consists of the details of the user.
 - The `post table` consists of the details of the user's posts,
 - The `category table ` consists of the information on the particular category the user has posted their ideas.
+- The `Feedback table` consists of the comments provided by the users for the posts.
 
 ## API CALLS NEEDED
 - SIGN UP:
+    ### `Request`:
 
-    - Name
+    - Name +  E-mail Id +  Password
 
-    - E-mail Id
-
-    - Password
+    ### `Response`:
+    - Sucessfully signed-in 
 
 - LOGIN:
-
-   - Email Id
-
-   - password
+    ### `Request`:
+   - Email Id + password
+   ### `Response`:
+    - Sucessfull login message + jwt token
 
 - My Post:
-
-    - user id
-
-    - post id
+     ### `Request`:
+    - jwt token(user id will be decoded form the token)
+     ### `Response`:
+    - posts of the corresponding user 
 
 - Posts on particular category:
-
+     ### `Request`:
     - category id
+     ### `Response`:
+     - posts corresponds to that particular category
+
 
 - Likes:
-
-    - user id 
-
-    - post id
+    ### `Request`:
+    - jwt token + post id
+    ### `Response`:
+     - Count of no.of likes for that posts increases.
 
 - Feedback:
+     ### `Request`:
 
-    - user id 
-    
-    - post id
-
-    - Comments(Content)
+    - jwt token + post id + Comments(Content)
+    ### `Response`:
+    - The provided comment will be added and will be displayed below that corresponding posts.
 
     
 
  ### `Intially all the post will be available in short`
 
 - To see the full post:
-
+     ### `Request`:
      - post id 
+     ### `Response`:
+    - the full post corresponds to that post id  will be fetched and displayed
 
 - To see similar posts by the user:
-
+     ### `Request`:
      - user id
+     ### `Response`:
+     - the post corresponds to that particular user id will be displayed 
 
 - To Post a content:
+    ### `Request`:
 
-     - user id 
-
-     - Title
-
-	 - Description
-
-	 - category
-
-	 - image
+     - jwt token + Title + Description + category + image
+     ### `Response`:
+     - post added sucessully 
 
 - Delete a post: 
+    ### `Request`:
+    - jwt token + post id
+    ### `Response`:
+    - post removed sucessfully
 
-	- post id
+- Update post:
+     ### `Request`:
 
-- Update post: 
-
-	- post id
-
-	- Title , Description , category , image
+	- post id + Title , Description , category , image
+     ### `Response`:
+    - post updated suceesully  
 
 
 ## `EXPLANATION:`
