@@ -67,7 +67,6 @@ Since these all the four Normalisation are followed by our table,the table is in
      ### `Response`:
      - posts corresponds to that particular category
 
-
 - Likes:
     ### `Request`:
     - jwt token + post id
