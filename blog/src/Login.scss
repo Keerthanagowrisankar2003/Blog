@@ -1,0 +1,140 @@
+// Font Import
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+// Color Variables
+$violet: #9D26D6;
+$white: #ffffff;
+$yellow: #FFD166;
+$black:black;
+$grey:#E2E2E2;
+
+
+// Image Container Styling
+.image-container {
+  // Image Styling
+  .image {
+    width: 1200px;
+    height: 1200;
+  }
+  display: flex;
+  align-items: center;
+
+  // Header Styling
+  .quote {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+  }
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  
+}
+
+// Page Container Styling
+.Authentication-page {
+  background-color: $violet;
+  border: 2px solid $white;
+  width: 100%;
+  height: 620px;
+  margin: 10px;
+  border-radius: 50px;
+  margin-left: 50px;
+  margin-right: 0px;
+  margin-top: 1px;
+  margin-bottom: 0px;
+
+  // Form Container Styling
+  .login-form {
+    max-width: 800px;
+    height: 400px;
+    padding: 0px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid $white;
+    border-radius: 10px;
+    margin-right: 400px;
+    background-color: $white;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 70px;
+    margin-bottom: 70px;
+
+    // Input Container Styling
+    .input {
+      margin-left: 30px;
+      margin-right: 30px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    // Input Field Styling
+    input {
+      width: 85%;
+      padding: 8px;
+      border: 1px solid $white;
+      border-radius: 5px;
+      margin-bottom: 30px;
+      margin-top: 30px;
+      margin-left: 27px;
+      margin-right: 20px;
+      height: 30px;
+      background-color:$grey;
+
+      // Input Placeholder Styling
+      &::placeholder {
+        font-family: 'Sensation', sans-serif;
+        font-weight: normal;
+        color: $black;
+      }
+    }
+
+    // Button Styling
+    button {
+      width: 90%;
+      padding: 8px;
+      border: 1px solid $white;
+      border-radius: 20px;
+      margin-left: 20px;
+      margin-top: 20px;
+      margin-right: 20px;
+      background-color: $violet;
+      color: $yellow;
+      cursor: pointer;
+      height: 50px;
+      font-size: 20px;
+      font-family: 'Sensation', sans-serif;
+    }
+
+    // Click Here Link Styling
+    .click-here {
+      color: $yellow;
+    }
+
+    // Link Styling
+    .account {
+      color: $violet;
+    }
+
+    // Additional Styling for Links
+    a {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color:$black;
+      font-weight: bold;
+      text-decoration: none;
+
+      // Hover Styling for Links
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Image Styling
+.image {
+  max-width: 400px;
+  margin-right: 40px;
+}
