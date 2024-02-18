@@ -9,16 +9,21 @@ const { GetAllBlogRouter,GetAllBlog } = require('./GetAllBlogs');
 const { GetBlogCategoryRouter,GetBlogCategory } = require('./GetBlogCategory');
 const { GetMyBlogRouter, GetMyBlog } = require('./GetMyBlog');
 const { GetBlogUserRouter, GetBlogUser } = require('./GetBlogUser');
-const bodyParser = require('body-parser');
+const { router7, SearchItem} = require('./SearchBlog');
+const { FullBlogRouter, FullBlog} = require('./GetFullBlog');
+var bodyParser = require('body-parser');
 const { LikeCountRouter, LikeCount } = require('./LikeCount');
+const importDependencies = require('./Imports');
+const { GetFeedbackRouter, GetFeedback } = require('./GetFeedback');
+const { cors} = importDependencies();
 
 const app = express();
 const PORT = 3000;
-
+app.use(cors());
 app.use(bodyParser.json());
 
 //Signup 
-app.use('./Signup', SignupRouter);
+app.use('/Signup', SignupRouter);
 app.post('/Signup', async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   try {
@@ -29,7 +34,7 @@ app.post('/Signup', async (req, res) => {
   }
 });
 //login
-app.use('./login', LoginRouter);
+app.use('/login', LoginRouter);
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -42,22 +47,24 @@ app.post('/login', async (req, res) => {
   }
 });
 //AddBlog
-app.use('./AddBlog', AddBlogRouter);
-app.post('/AddBlog', async (req, res) => {
-  const {token,Title, category,Description ,Image} = req.body;
+app.use( bodyParser.json({limit: '50mb'}) );
+app.use('/AddBlog', AddBlogRouter);
+app.post('/Blog', async (req, res) => {
+  const {Title, category,Description ,ImageLink} = req.body;
   try {
-    const UserAddBlog = await AddBlog (token,Title, category,Description ,Image,req,res);
+    const UserAddBlog = await AddBlog (Title, category,Description ,ImageLink,req,res);
+    
   } 
   catch (error) {
     return 
   }
 });
 //UpdateBlog
-app.use('./UpdateBlog', UpdateRouter);
+app.use('/UpdateBlog', UpdateRouter);
 app.put('/UpdateBlog',  async (req, res) => {
   const {token,blog_id,Title,Description,Image} = req.body;
   try {
-    const UpdateBlogs = await UpdateBlog (token,blog_id,Title,Description,Image,req,res);
+    const UpdateBlogs = await UpdateBlog (blog_id,Title,Description,Image,req,res);
    
   } 
   catch (error) {
@@ -65,43 +72,46 @@ app.put('/UpdateBlog',  async (req, res) => {
   }
 });
 //DeleteBlog
-app.use('./DeleteBlog', DeleteBlogRouter);
-app.delete('/DeleteBlog',  async (req, res) => {
-  const {token,blog_id } = req.body;
+app.use('/DeleteBlog', DeleteBlogRouter);
+app.options('*', cors());
+app.post('/DeleteBlog',  async (req, res) => {
+   const {blog_id } = req.body;
+   console.log('deletion request');
   try {
-    const DeleteBlogs = await DeleteBlog (token,req,res,blog_id);
+    const DeleteBlogs = await DeleteBlog (blog_id,req,res);
+    console.log('request recieved for deletion ');
   }
   catch (error) {
-    return 
+    console.error('Error handling deletion request:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 //AddFeedBack
-app.use('./AddFeedback', AddFeedbackRouter);
-app.post('/AddFeedback', async (req, res) => {
+app.use('/AddFeedback', AddFeedbackRouter);
+app.post('/Feedback', async (req, res) => {
   const { token, blog_id,Name,feedback } = req.body;
   try {
-    const AddFeedbacks = await AddFeedback(token,blog_id,Name, feedback, req, res);
+    const AddFeedbacks = await AddFeedback(blog_id,Name, feedback, req, res);
   } catch (error) {
     return;
   }
 });
 //GetAllBlog
-app.use('./GetAllBlog', GetAllBlogRouter);
-app.get('/GetAllBlog',  async (req, res) => {
+app.use('/GetAllBlog', GetAllBlogRouter);
+app.get('/AllBlog', async (req, res) => {
   try {
-    const GetAllBlogs = await GetAllBlog (req,res);
-   
-  } 
-  catch (error) {
-    return 
+    const blogs = await GetAllBlog(req, res);
+    
+  } catch (error) {
+    return
   }
 });
 //Get Category on particular Blog
-app.use('./GetBlogCategory', GetBlogCategoryRouter);
-app.get('/GetBlogCategory',  async (req, res) => {
-  const { token, category } = req.body;
+app.use('/GetBlogCategory', GetBlogCategoryRouter);
+app.post('/BlogCategory',  async (req, res) => {
+  const { category } = req.body;
   try {
-    const GetAllcategories = await GetBlogCategory (req,res,token,category);
+    const GetAllcategories = await GetBlogCategory (req,res,category);
    
   } 
   catch (error) {
@@ -109,11 +119,11 @@ app.get('/GetBlogCategory',  async (req, res) => {
   }
 });
 //Get My Blog
-app.use('./GetMyBlog', GetMyBlogRouter);
-app.get('/GetMyBlog',  async (req, res) => {
-  const { token } = req.body;
+app.use('/GetMyBlog', GetMyBlogRouter);
+app.get('/MyBlog',  async (req, res) => {
+  
   try {
-    const GetAllUser = await GetMyBlog (token,req,res);
+    const GetAllUser = await GetMyBlog (req,res);
    
   } 
   catch (error) {
@@ -121,11 +131,12 @@ app.get('/GetMyBlog',  async (req, res) => {
   }
 });
 //Get Blog on particular user
-app.use('./GetBlogUser', GetBlogUserRouter);
-app.get('/GetBlogUser',  async (req, res) => {
-  const { token ,blog_id} = req.body;
+app.use(cors());
+app.use('/BlogUser', GetBlogUserRouter);
+app.post('/BlogUser',  async (req, res) => {
+  const { blog_id,token} = req.body;
   try {
-    const GetAllUser = await GetBlogUser (token,blog_id,req,res);
+    const GetAllUser = await GetBlogUser (req,res,token,blog_id);
    
   } 
   catch (error) {
@@ -133,14 +144,51 @@ app.get('/GetBlogUser',  async (req, res) => {
   }
 });
 //Count no.of likes for a blog
-app.use('./LikeCount', LikeCountRouter);
+app.use('/LikeCount', LikeCountRouter);
 app.post('/LikeCount',  async (req, res) => {
-  const { token ,blog_id} = req.body;
+  const {blog_id} = req.body;
   try {
-    const CountLikes = await LikeCount (token,blog_id,req,res);
+    const CountLikes = await LikeCount (blog_id,req,res);
    
   } 
   catch (error) {
+    return 
+  }
+});
+//Search Item
+app.use('/SearchBlog', router7);
+app.post('/SearchBlog',  async (req, res) => {
+  const {searchQuery } = req.body;
+  try {
+    const SearchItems = await SearchItem (req,res,searchQuery);
+   
+  }
+   catch (error) { 
+    return 
+  }
+});
+///FullBlog
+//Search Item
+app.use('/FullBlog', FullBlogRouter);
+app.post('/FullBlog',  async (req, res) => {
+  const {blog_id ,token} = req.body;
+  try {
+    const EntireBlogs= await FullBlog (req,res,token,blog_id);
+   
+  }
+   catch (error) { 
+    return 
+  }
+});
+//GetFeedbacks 
+app.use('/GetFeedback', GetFeedbackRouter);
+app.post('/GetFeedback',  async (req, res) => {
+  const {blog_id ,token} = req.body;
+  try {
+    const FeedbackBlogs= await GetFeedback (req,res,token,blog_id);
+   
+  }
+   catch (error) { 
     return 
   }
 });

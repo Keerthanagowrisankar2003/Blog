@@ -13,13 +13,15 @@ const pool = mysql.createPool({
 
 UpdateRouter.use(bodyParser.json());
 UpdateRouter.use(cors());
-const secretKey = 'your_secret_key';
-const UpdateBlog = async(token,blog_id,Title,Description ,Image,req,res) => {
- // const expense_id = req.body.expense_id;
-//  const token = extractToken(req); 
+const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
+const UpdateBlog = async(Title,Description ,Image,req,res) => {
   try {
-    const decoded = jwt.verify(token, secretKey);
-    const userId = decoded.userid;
+   
+    const token = extractToken(req); 
+        const decoded = jwt.verify(token, secretKey);
+        const userId = decoded.userid;
+        const { blog_id } = req.body;
+
     pool.query(
       `UPDATE blog SET Title= ?, Description = ? , Image = ? WHERE blog_id = ?`,
       [Title, Description,Image,blog_id],

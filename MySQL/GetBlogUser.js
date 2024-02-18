@@ -11,18 +11,21 @@ const pool = mysql.createPool({
     connectionLimit: 10,
   });
 
+
 GetBlogUserRouter.use(bodyParser.json());
 GetBlogUserRouter.use(cors());
-const secretKey = 'your_secret_key';
+const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
 // Endpoint to get Blogs for a user based on the JWT token
-const GetBlogUser = async (token,blog_id,req, res) => {
-   
-//   const token = extractToken(req); 
+const GetBlogUser = async (req, res) => {
+ 
+
+  const token = extractToken(req); 
   try {
     // Validate the token and get the userId
      const decoded = jwt.verify(token, secretKey);
      const userId = decoded.userid;
     // Fetch blogs from the blog table from the Blogid 
+    const { blog_id } = req.body;
     const [userResult] = await pool.promise().query(
         `SELECT userid
          FROM blog

@@ -1,7 +1,7 @@
 const { extractToken } = require('./ExtractJwtToken');
 const importDependencies = require('./Imports');
 const { express, bodyParser, cors, mysql, jwt } = importDependencies();
-const GetMyBlogRouter = express.Router();
+const GetFeedbackRouter = express.Router();
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -11,11 +11,12 @@ const pool = mysql.createPool({
     connectionLimit: 10,
   });
 
-GetMyBlogRouter.use(bodyParser.json());
-GetMyBlogRouter.use(cors());
+GetFeedbackRouter.use(bodyParser.json());
+GetFeedbackRouter.use(cors());
 const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
 // Endpoint to get Blogs for a user based on the JWT token
-const GetMyBlog = async (req, res) => {
+const GetFeedback = async (req, res) => {
+    const { blog_id } = req.body;
    
    const token = extractToken(req); 
   try {
@@ -23,19 +24,16 @@ const GetMyBlog = async (req, res) => {
      const decoded = jwt.verify(token, secretKey);
      const userId = decoded.userid;
     // Fetch blogs from the blog table for a particular user based on the userid encoded from the token
-    const [blogs] = await pool.promise().query(
-       `SELECT  blog.blog_id,blog.title, blog_category.category,blog.description,blog.Image,blog.LikeCount
-       FROM blog
-       LEFT JOIN blog_category ON blog_category.categoryid = blog.categoryid
-       WHERE blog_category.userid = ?`,
-      [userId]
+    const [feedback] = await pool.promise().query(
+        `SELECT name, feedback FROM feedback WHERE blog_id = ?`,
+        [blog_id],
     );
     // Send the response in the expected format
-    res.status(200).json({ blogs: blogs });
+    res.status(200).json({ feedback: feedback});
     return;
   } catch (error) {
     console.error('Error fetching Blog :', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-module.exports = { GetMyBlogRouter, GetMyBlog };
+module.exports = { GetFeedbackRouter, GetFeedback };

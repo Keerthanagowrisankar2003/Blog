@@ -1,7 +1,8 @@
 const importDependencies = require('./Imports');
 const { express, bodyParser, cors, mysql, jwt } = importDependencies();
+const { sendOTP } = require('./MailOtp');
 const SignupRouter = express.Router();
-const bcrypt = require('bcrypt');//password encryption
+const bcrypt = require('bcrypt');
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -72,8 +73,8 @@ const createBlogTable = async (connection, userId) => {
         blog_id INT AUTO_INCREMENT PRIMARY KEY,
         Title VARCHAR(100),
         categoryid INT,
-        Description VARCHAR(1000),
-        Image LONGBLOB,
+        Description VARCHAR(1638),
+        Image VARCHAR(1000),
         LikeCount INT,
         FOREIGN KEY (userid) REFERENCES user(userid),
         FOREIGN KEY (categoryid) REFERENCES blog_category(categoryid)
@@ -92,7 +93,6 @@ const createBlogTable = async (connection, userId) => {
 // Signup route handler
 const Signup = async (firstname, lastname, email, password, res) => {
   try {
-    // Check if the user with the given email already exists
     const userExists = await checkExistingUser(email);
 
     if (userExists) {
@@ -100,10 +100,8 @@ const Signup = async (firstname, lastname, email, password, res) => {
       return;
     }
 
-    // Hash the password
     const hashedPassword = await hashPassword(password);
 
-    // Acquire a connection from the pool and begin a transaction
     pool.getConnection((getConnectionError, connection) => {
       if (getConnectionError) {
         console.error('Error getting connection:', getConnectionError);
@@ -120,14 +118,27 @@ const Signup = async (firstname, lastname, email, password, res) => {
         }
 
         try {
-          // Insert user, create Blog_category table, and create Blog table
           const userId = await insertUser(connection, firstname, lastname, email, hashedPassword);
 
           await createBlogCategoryTable(connection, userId);
-
           await createBlogTable(connection, userId);
 
-          // Commit the transaction
+          // Generate a random 6-digit OTP
+          const otp = Math.floor(100000 + Math.random() * 900000);
+
+          // Send the OTP to the user's email
+          try {
+            await sendOTP(email, otp);
+            console.log('OTP sent successfully:', otp);
+          } catch (otpError) {
+            console.error('Error sending OTP:', otpError);
+            res.status(500).json({ error: 'Error sending OTP' });
+            connection.rollback(() => {
+              connection.release();
+            });
+            return;
+          }
+
           connection.commit((commitError) => {
             if (commitError) {
               console.error('Error committing transaction:', commitError);
@@ -136,13 +147,11 @@ const Signup = async (firstname, lastname, email, password, res) => {
                 connection.release();
               });
             } else {
-              // Respond with success message
               res.status(200).json({ message: 'User signed up successfully' });
               connection.release();
             }
           });
         } catch (error) {
-          // Handle errors during the transaction
           console.error('Error during transaction:', error);
           connection.rollback(() => {
             res.status(500).json({ error: 'Internal server error' });
@@ -152,11 +161,9 @@ const Signup = async (firstname, lastname, email, password, res) => {
       });
     });
   } catch (error) {
-    // Handle errors outside the transaction
     console.error('Error during signup:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Export router2 and Signup function
 module.exports = { SignupRouter, Signup };

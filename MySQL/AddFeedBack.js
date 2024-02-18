@@ -14,6 +14,8 @@ const pool = mysql.createPool({
 
 AddFeedbackRouter.use(bodyParser.json());
 AddFeedbackRouter.use(cors());
+const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
+
 
 const createFeedbackTable = async (connection, userId) => {
   return new Promise((resolve, reject) => {
@@ -38,9 +40,10 @@ const createFeedbackTable = async (connection, userId) => {
   });
 };
 
-const AddFeedback = async (token, blog_id,Name,feedback, req, res) => {
+const AddFeedback = async ( blog_id,Name,feedback, req, res) => {
   try {
-    const decoded = jwt.verify(token, 'your_secret_key');
+    const token = extractToken(req); 
+    const decoded = jwt.verify(token, secretKey);
     const userId = decoded.userid;
 
     // Create feedback table if it doesn't exist

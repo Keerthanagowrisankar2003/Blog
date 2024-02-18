@@ -14,7 +14,7 @@ const pool = mysql.createPool({
 LoginRouter.use(bodyParser.json());
 LoginRouter.use(cors());
 // JWT secret key (replace with a secure key)
-const secretKey = 'your_secret_key';
+const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
 const login = async (email, password, res) => {
   try {
     const [results] = await pool.promise().query('SELECT * FROM user WHERE emailid = ?', [email]);

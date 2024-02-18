@@ -13,11 +13,11 @@ const pool = mysql.createPool({
 
 GetBlogCategoryRouter.use(bodyParser.json());
 GetBlogCategoryRouter.use(cors());
-const secretKey = 'your_secret_key';
+const secretKey = 'dgshvslcfsihbglvioxbruidghisudlkiy';
 // Endpoint to get Blogs for a particular category based on the JWT token
-const GetBlogCategory = async (req, res, token ,category) => {
+const GetBlogCategory = async (req, res,category) => {
     const CategoryName = category;
-//   const token = extractToken(req); 
+   const token = extractToken(req); 
   try {
     // Validate the token and get the userId
      const decoded = jwt.verify(token, secretKey);
