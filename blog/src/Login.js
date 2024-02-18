@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import './Login.scss';
 import Authenticationimage from './images/Authentication.jpg';
 import { Link,useNavigate } from 'react-router-dom'; // Change here
-// import axiosInstance from './axios';
+import axiosInstance from './axios';
 import { toast } from 'react-toastify';
+import { AxiosInstance } from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
@@ -13,36 +14,36 @@ const Login = () => {
  
  
 
-//   const handleLogin = async () => {
-//     try {
-//       const response = await axiosInstance.post('/Login', { email, password });
+  const handleLogin = async () => {
+    try {
+      const response = await axiosInstance.post('/Login', { email, password });
 
-//       if (response.status === 200) {
-//         const token = response.data.token;
-//         console.log('Token:', token);
-//         // Save the token to local storage
-//         localStorage.setItem('token', token);
+      if (response.status === 200) {
+        const token = response.data.token;
+        console.log('Token:', token);
+        // Save the token to local storage
+        localStorage.setItem('token', token);
   
-//         toast.success('Login successful!', {
-//           onClose: () => {
-//             // Navigate to /HomePage after the toast is closed
-//             navigate('/HomePage');
-//           },
-//         });
-//       }else {
-//         toast.error('Invalid email or password', {
-//           theme: "colored",
-//           });
-//         // alert('Invalid email or password');
-//       }
-//     } catch (error) {
-//       console.error('Error during login:', error);
-//       toast.error('Invalid email or password', {
-//         theme: "colored",
-//         });
-//       // alert('Login unsuccessful');
-//     }
-//   };
+        toast.success('Login successful!', {
+          onClose: () => {
+            // Navigate to /HomePage after the toast is closed
+            navigate('/');
+          },
+        });
+      }else {
+        toast.error('Invalid email or password', {
+          theme: "colored",
+          });
+        // alert('Invalid email or password');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      toast.error('Invalid email or password', {
+        theme: "colored",
+        });
+      // alert('Login unsuccessful');
+    }
+  };
 
   const validatePassword = () => {
     if (password.length < 8) {
@@ -112,7 +113,7 @@ const Login = () => {
     // Validate the password
     if (validatePassword()) {
       // alert('Form is valid');
-    //   handleLogin();
+      handleLogin();
     }
   }
 

@@ -1,5 +1,3 @@
-// axios.js
-
 import axios from 'axios';
 
 // Creating a default Axios instance with a base URL
